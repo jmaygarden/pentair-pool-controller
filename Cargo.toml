@@ -1,0 +1,47 @@
+[package]
+name = "pentair-pump-controller"
+version = "0.1.0"
+authors = ["Judge Maygarden <jmaygarden@gmail.com>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+embassy-executor = { version = "0.3.2", features = [
+    "arch-riscv32",
+    "nightly",
+    "executor-thread",
+    "integrated-timers",
+] }
+embassy-time = { version = "0.1.5", features = ["nightly"] }
+embedded-io = "0.6.1"
+embedded-svc = { version = "0.26.2", default-features = false, features = [
+    "nightly",
+] }
+esp-backtrace = { version = "0.9.0", features = [
+    "esp32c3",
+    "panic-handler",
+    "exception-handler",
+    "print-uart",
+] }
+esp-println = { version = "0.7.0", features = ["esp32c3", "log"] }
+esp-wifi = { git = "https://github.com/esp-rs/esp-wifi/", rev = "5a7b8f04dfbcc2da256238b49b19b9bd73105f49", features = [
+    "async",
+    "esp32c3",
+    "wifi",
+] }
+hal = { package = "esp32c3-hal", version = "0.13.0", features = [
+    "embassy-time-timg0",
+] }
+heapless = { version = "0.8.0", default-features = false }
+log = { version = "0.4.18" }
+smoltcp = { version = "0.10.0", default-features = false, features = [
+    "proto-igmp",
+    "proto-ipv4",
+    "socket-tcp",
+    "socket-icmp",
+    "socket-udp",
+    "medium-ethernet",
+    "proto-dhcpv4",
+    "socket-raw",
+    "socket-dhcpv4",
+] }
