@@ -3,7 +3,7 @@
 #![feature(type_alias_impl_trait)]
 
 use embassy_executor::Spawner;
-use embassy_net::{Config, Stack, StackResources};
+use embassy_net::{Config, DhcpConfig, Stack, StackResources};
 use embassy_time::Timer;
 use embedded_svc::wifi::{ClientConfiguration, Configuration, Wifi};
 use esp_backtrace as _;
@@ -14,8 +14,9 @@ use hal::{
 };
 use static_cell::make_static;
 
-const SSID: &str = env!("WIFI_SSID");
+const HOSTNAME: &str = env!("DHCP_HOSTNAME");
 const PASSWORD: &str = env!("WIFI_PASSWORD");
+const SSID: &str = env!("WIFI_SSID");
 
 #[derive(Debug)]
 enum InitError {
@@ -53,7 +54,11 @@ fn init(spawner: &Spawner) -> Result<(), InitError> {
             InitError::WifiError
         })?;
 
-    let config = Config::dhcpv4(Default::default());
+    let config = {
+        let mut config = DhcpConfig::default();
+        config.hostname = Some(HOSTNAME.into());
+        Config::dhcpv4(config)
+    };
     let seed = 0xDEADBEEFBABECAFEu64;
     let network_stack = &*make_static!(Stack::new(
         wifi_interface,
