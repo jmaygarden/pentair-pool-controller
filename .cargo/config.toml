@@ -4,6 +4,7 @@ runner = "espflash flash --monitor"
 [env]
 ESP_LOGLEVEL="INFO"
 DHCP_HOSTNAME="pentair-pool-controller"
+SERVER_PORT="9001"
 WIFI_PASSWORD="bar"
 WIFI_SSID="foo"
 
