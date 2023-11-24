@@ -1,10 +1,12 @@
-use crate::platform::NetworkStack;
+use crate::platform::Platform;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 use embassy_time::Timer;
 
 const SERVER_PORT: &str = env!("SERVER_PORT");
 
-pub async fn server_task(network_stack: NetworkStack) {
+pub async fn server_task(mut platform: Platform<'static>) {
+    let controller = platform.get_controller();
+    let network_stack = platform.get_network_stack();
     let mut rx_meta = [PacketMetadata::EMPTY; 16];
     let mut rx_buffer = [0; 4096];
     let mut tx_meta = [PacketMetadata::EMPTY; 16];

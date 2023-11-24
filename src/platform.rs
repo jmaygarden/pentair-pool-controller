@@ -1,3 +1,4 @@
+use crate::controller::Controller;
 use embassy_executor::Spawner;
 use embassy_net::{Config, DhcpConfig, Stack, StackResources};
 use embassy_time::Timer;
@@ -19,12 +20,13 @@ pub enum PlatformError {
     WifiError,
 }
 
-pub struct Platform {
+pub struct Platform<'a> {
+    controller: Controller<'a>,
     network_stack: NetworkStack,
 }
 
-impl Platform {
-    pub fn setup(spawner: &Spawner) -> Result<Self, PlatformError> {
+impl<'a> Platform<'a> {
+    pub fn new(spawner: &Spawner) -> Result<Self, PlatformError> {
         let peripherals = Peripherals::take();
         let system = peripherals.SYSTEM.split();
         let clocks = ClockControl::max(system.clock_control).freeze();
@@ -65,10 +67,28 @@ impl Platform {
             seed
         ));
 
-        spawner.spawn(network_task(network_stack)).expect("task should start");
-        spawner.spawn(wifi_task(wifi_controller)).expect("task should start");
+        let controller = Controller::new(
+            clocks,
+            peripherals.GPIO,
+            peripherals.IO_MUX,
+            peripherals.UART0,
+        );
 
-        Ok(Self { network_stack })
+        spawner
+            .spawn(network_task(network_stack))
+            .expect("task should start");
+        spawner
+            .spawn(wifi_task(wifi_controller))
+            .expect("task should start");
+
+        Ok(Self {
+            controller,
+            network_stack,
+        })
+    }
+
+    pub fn get_controller(&mut self) -> &mut Controller<'a> {
+        &mut self.controller
     }
 
     pub fn get_network_stack(&self) -> NetworkStack {

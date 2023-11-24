@@ -16,7 +16,7 @@ async fn main(spawner: Spawner) {
     esp_println::logger::init_logger_from_env();
     log::info!("Logger is setup");
 
-    let platform = Platform::setup(&spawner).expect("platform should initialize");
+    let platform = Platform::new(&spawner).expect("platform should initialize");
 
-    server_task(platform.get_network_stack()).await;
+    server_task(platform).await;
 }
