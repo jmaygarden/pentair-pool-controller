@@ -2,8 +2,8 @@
 runner = "espflash flash --monitor"
 
 [env]
-ESP_LOGLEVEL="INFO"
 DHCP_HOSTNAME="pentair-pool-controller"
+ESP_LOGLEVEL="INFO"
 SERVER_PORT="9001"
 WIFI_PASSWORD="bar"
 WIFI_SSID="foo"
@@ -37,4 +37,4 @@ rustflags = [
 target = "riscv32imc-unknown-none-elf"
 
 [unstable]
-build-std = ["core"]
+build-std = ["core", "alloc"]

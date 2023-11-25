@@ -87,12 +87,13 @@ impl<'a> Platform<'a> {
         })
     }
 
-    pub fn get_controller(&mut self) -> &mut Controller<'a> {
-        &mut self.controller
-    }
+    pub fn split(self) -> (Controller<'a>, NetworkStack) {
+        let Platform {
+            controller,
+            network_stack,
+        } = self;
 
-    pub fn get_network_stack(&self) -> NetworkStack {
-        self.network_stack
+        (controller, network_stack)
     }
 }
 

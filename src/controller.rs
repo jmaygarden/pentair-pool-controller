@@ -11,6 +11,7 @@ use hal::{
     Uart, IO,
 };
 
+#[derive(Debug)]
 pub enum Error {
     Uart(uart::Error),
 }
